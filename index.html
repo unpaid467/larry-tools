@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Larry Tools</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body>
+
+  <!-- Mobile overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">⚙</span>
+          <span class="logo-text">Larry Tools</span>
+        </div>
+        <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">✕</button>
+      </div>
+
+      <div class="sidebar-search">
+        <input type="text" id="tool-search" placeholder="Search tools…" autocomplete="off" />
+      </div>
+
+      <nav id="tool-nav" aria-label="Tools navigation">
+        <!-- Populated by app.js -->
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>Larry Tools</span>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main-wrapper">
+      <header class="topbar">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open sidebar">
+          <span></span><span></span><span></span>
+        </button>
+        <span class="topbar-title" id="topbar-title">Larry Tools</span>
+      </header>
+
+      <main class="content" id="tool-content">
+        <!-- Populated by app.js when a tool is selected -->
+      </main>
+    </div>
+
+  </div>
+
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>
