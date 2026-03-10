@@ -9,8 +9,15 @@
  * The order here controls the order tools appear in the sidebar.
  */
 
-import ExampleTool from './example-tool/tool.js';
+import ExampleTool      from './example-tool/tool.js';
+import SecretScratchPad from './secret-scratch-pad/tool.js';
 
 export default [
+  // ── Regular tools ──────────────────────────────────────
   ExampleTool,
+
+  // ── Secret tools (secret: true) ────────────────────────
+  // These only appear when the secret sequence is entered.
+  // Add secret tools here in the same way as regular ones.
+  SecretScratchPad,
 ];

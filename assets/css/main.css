@@ -102,6 +102,22 @@ ul { list-style: none; }
   line-height: 1;
 }
 
+/* Individual letter spans — all clickable to mask the secret sequence */
+.logo-char {
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 2px;
+  transition: background var(--transition), color var(--transition);
+}
+.logo-char:hover  { background: rgba(255,255,255,0.10); }
+.logo-char:active { background: rgba(255,255,255,0.20); }
+
+/* Subtle glow on logo when secret mode is active */
+.logo-text.secret-active .logo-char {
+  color: #f0c040;
+}
+
 .logo-text {
   font-size: 15px;
   font-weight: 600;

@@ -89,6 +89,7 @@ export default MyTool;
 | `description` | `string` | ✅ | One-sentence description shown under the tool name. |
 | `icon` | `string` | ✅ | Emoji shown as the tool icon. |
 | `category` | `string` | ✅ | Groups tools in the sidebar (see [Categories](#categories)). |
+| `secret` | `boolean` | ❌ | Set to `true` to hide this tool until the secret unlock sequence is entered. |
 
 ---
 
@@ -262,6 +263,23 @@ Use one of the existing categories to keep the sidebar organised, or create a ne
 | `Dev` | Developer utilities (regex tester, diff, etc.) |
 | `Math` | Calculators, expressions |
 | `Network` | IP info, DNS, URL parser |
+| `🔒 Secret` | Hidden tools — only visible after the unlock sequence |
+
+### Secret tools
+
+Add `secret: true` to your tool object to hide it from the sidebar and welcome screen until the unlock sequence is entered on the logo. Users enter the sequence by clicking the letters in **Larry Tools** in this order: **a → a → y → y → T → T → s → s**. Entering the sequence again hides all secret tools.
+
+```js
+const MySecretTool = {
+  id:       'my-secret-tool',
+  name:     'My Secret Tool',
+  icon:     '🕵',
+  category: '🔒 Secret',
+  secret:   true,          // ← the only extra field needed
+  render()  { /* … */ },
+  init()    { /* … */ },
+};
+```
 
 ---
 

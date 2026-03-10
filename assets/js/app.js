@@ -5,13 +5,19 @@
 
 import tools from '../../tools/index.js';
 
+// Secret unlock sequence: click a,a,y,y,T,T,s,s on the logo letters
+const SECRET_SEQUENCE = ['a', 'a', 'y', 'y', 'T', 'T', 's', 's'];
+
 class LarryTools {
   constructor() {
-    this.tools       = tools;
-    this.currentTool = null;
-    this._toastEl    = null;
+    this.tools            = tools;
+    this.currentTool      = null;
+    this._toastEl         = null;
+    this._secretUnlocked  = false;
+    this._secretProgress  = 0;
 
     this._createToastContainer();
+    this._setupSecretSequence();
     this._renderSidebar();
     this._setupMobileMenu();
     this._setupSearch();
@@ -27,9 +33,10 @@ class LarryTools {
     const nav = document.getElementById('tool-nav');
     const lc  = filter.toLowerCase();
 
-    // Group tools by category
+    // Group tools by category (hide secret tools unless unlocked)
     const categories = {};
     for (const tool of this.tools) {
+      if (tool.secret && !this._secretUnlocked) continue;
       if (lc && !tool.name.toLowerCase().includes(lc) &&
                 !tool.description?.toLowerCase().includes(lc)) continue;
       const cat = tool.category || 'General';
@@ -110,7 +117,8 @@ class LarryTools {
   // -------------------------------------------------------
   _handleRouting() {
     const id   = window.location.hash.slice(1);
-    const tool = id ? this.tools.find(t => t.id === id) : null;
+    // Secret tools are only reachable when secret mode is active
+    const tool = id ? this.tools.find(t => t.id === id && (!t.secret || this._secretUnlocked)) : null;
 
     if (tool) {
       this._loadTool(tool);
@@ -169,11 +177,13 @@ class LarryTools {
     this._setActiveSidebarLink(null);
     document.getElementById('topbar-title').textContent = 'Larry Tools';
 
-    const cards = this.tools.map(t => `
-      <a href="#${t.id}" class="welcome-tool-card">
-        <span class="wc-icon">${t.icon ?? '🔧'}</span>
-        <span class="wc-name">${t.name}</span>
-      </a>`).join('');
+    const cards = this.tools
+      .filter(t => !t.secret || this._secretUnlocked)
+      .map(t => `
+        <a href="#${t.id}" class="welcome-tool-card">
+          <span class="wc-icon">${t.icon ?? '🔧'}</span>
+          <span class="wc-name">${t.name}</span>
+        </a>`).join('');
 
     document.getElementById('tool-content').innerHTML = `
       <div class="welcome">
@@ -182,6 +192,45 @@ class LarryTools {
         <p>A free, open toolkit. Pick a tool from the sidebar or below to get started.</p>
         <div class="welcome-grid">${cards}</div>
       </div>`;
+  }
+
+  // -------------------------------------------------------
+  // Secret sequence
+  // -------------------------------------------------------
+  _setupSecretSequence() {
+    document.getElementById('logo-text').addEventListener('click', e => {
+      const char = e.target.dataset.char;
+      if (!char) return;   // space or icon clicked
+
+      if (char === SECRET_SEQUENCE[this._secretProgress]) {
+        this._secretProgress++;
+        if (this._secretProgress === SECRET_SEQUENCE.length) {
+          this._secretProgress = 0;
+          this._toggleSecret();
+        }
+      } else {
+        // Wrong letter — reset, but still check if it starts the sequence
+        this._secretProgress = (char === SECRET_SEQUENCE[0]) ? 1 : 0;
+      }
+    });
+  }
+
+  _toggleSecret() {
+    this._secretUnlocked = !this._secretUnlocked;
+    const logoText = document.getElementById('logo-text');
+    logoText.classList.toggle('secret-active', this._secretUnlocked);
+
+    this._renderSidebar();
+
+    if (this._secretUnlocked) {
+      this.toast('🔓 Secret tools unlocked', 'success');
+    } else {
+      // If the user is currently viewing a secret tool, send them to welcome
+      if (this.currentTool?.secret) {
+        window.location.hash = '';
+      }
+      this.toast('🔒 Secret tools hidden', '');
+    }
   }
 
   // -------------------------------------------------------
